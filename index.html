@@ -153,6 +153,8 @@ main::-webkit-scrollbar { display: none; }
   letter-spacing: -0.02em;
   line-height: 1;
   font-size: 30px;
+  min-width: 90px;
+  text-align: center;
 }
 
 .rows {
@@ -298,7 +300,7 @@ main::-webkit-scrollbar { display: none; }
   .page { flex-direction: row; align-items: center; padding: 4px 12px; gap: 12px; }
   .page-displays { max-width: none; flex: 1; gap: 8px; min-width: 0; }
   .display-housing { padding: 10px 14px 10px 18px; gap: 18px; flex: 1; min-height: 0; }
-  .line-marker { font-size: 36px; }
+  .line-marker { font-size: 36px; min-width: 110px; }
   .rows { gap: 7px; }
   .row { min-height: 46px; padding: 7px 14px; border-radius: 8px; }
   .destination { font-size: 28px; letter-spacing: 0.09em; }
@@ -313,7 +315,7 @@ main::-webkit-scrollbar { display: none; }
 /* sehr schmale Landscape (alte iPhones) */
 @media (orientation: landscape) and (max-height: 370px) {
   .display-housing { padding: 7px 10px 7px 14px; gap: 14px; }
-  .line-marker { font-size: 28px; }
+  .line-marker { font-size: 28px; min-width: 86px; }
   .row { min-height: 38px; padding: 5px 10px; }
   .destination { font-size: 22px; }
   .cd { width: 38px; height: 30px; font-size: 22px; }
