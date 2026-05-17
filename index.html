@@ -172,7 +172,7 @@ main::-webkit-scrollbar { display: none; }
 }
 
 .destination {
-  flex: 1;
+  flex: 1 1 0;
   font-family: 'VT323', 'Courier New', monospace;
   color: #ffb000;
   text-shadow: 0 0 4px rgba(255,176,0,0.7), 0 0 10px rgba(255,176,0,0.35);
@@ -182,8 +182,9 @@ main::-webkit-scrollbar { display: none; }
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: clip;
+  text-overflow: ellipsis;
   min-width: 0;
+  max-width: 100%;
 }
 
 .cds { display: flex; gap: 5px; flex-shrink: 0; }
@@ -563,7 +564,11 @@ main::-webkit-scrollbar { display: none; }
           return;
         }
         const line = mon.lines.find(l => l.name === s.line) || mon.lines[0];
-        if (line.towards) $dest.textContent = line.towards.trim().toUpperCase();
+        if (line.towards) {
+          // Nur erstes Ziel — API liefert oft Liste mit Zwischenstationen
+          const first = line.towards.split(/[,\/]|\s+bis\s+/i)[0].trim();
+          $dest.textContent = first.toUpperCase();
+        }
         const deps = (line.departures && line.departures.departure) || [];
         const slots = [];
         for (let i = 0; i < MAX_DEPARTURES; i++) {
