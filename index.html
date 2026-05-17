@@ -7,16 +7,14 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Wien Öffis">
-<meta name="theme-color" content="#0a0a0c">
+<meta name="theme-color" content="#000000">
 <title>Wien Öffis – Live</title>
 
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20rx%3D%2240%22%20fill%3D%22%232c2c32%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22152%22%20height%3D%22152%22%20rx%3D%2222%22%20fill%3D%22%23000%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%22122%22%20font-family%3D%22Helvetica%2C-apple-system%2Csans-serif%22%20font-size%3D%2272%22%20font-weight%3D%22900%22%20fill%3D%22%23ff2d2d%22%20text-anchor%3D%22middle%22%3EU1%3C%2Ftext%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22148%22%20r%3D%223%22%20fill%3D%22%2300ff80%22%2F%3E%3C%2Fsvg%3E">
-
-<link rel="manifest" href="data:application/manifest+json;utf8,%7B%22name%22%3A%22Wien%20%C3%96ffis%22%2C%22short_name%22%3A%22Wien%20%C3%96ffis%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22fullscreen%22%2C%22orientation%22%3A%22landscape%22%2C%22background_color%22%3A%22%230a0a0c%22%2C%22theme_color%22%3A%22%230a0a0c%22%7D">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20rx%3D%2240%22%20fill%3D%22%23141414%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22152%22%20height%3D%22152%22%20rx%3D%2222%22%20fill%3D%22%23000%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%22122%22%20font-family%3D%22Helvetica%2C-apple-system%2Csans-serif%22%20font-size%3D%2272%22%20font-weight%3D%22900%22%20fill%3D%22%23e8001d%22%20text-anchor%3D%22middle%22%3EU1%3C%2Ftext%3E%3C%2Fsvg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -24,9 +22,9 @@
 html, body {
   width: 100%;
   height: 100%;
-  background: #0a0a0c;
-  color: #ffb000;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #000;
+  color: #ffaa00;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
   overflow: hidden;
   -webkit-user-select: none;
   user-select: none;
@@ -36,66 +34,50 @@ html, body {
 }
 
 body {
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  display: flex;
-  flex-direction: column;
   position: relative;
   min-height: 100%;
-  background: radial-gradient(ellipse at 50% 30%, #16161c 0%, #0a0a0c 70%), #0a0a0c;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
-html::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(0deg,
-    rgba(255,255,255,0.025) 0px,
-    rgba(255,255,255,0.025) 1px,
-    transparent 1px,
-    transparent 3px);
-  pointer-events: none;
-  z-index: 100;
-}
-
-/* ==================== HEADER ==================== */
-
-header {
+/* ==================== LIVE INDICATOR ==================== */
+.live {
+  position: absolute;
+  top: 6px;
+  left: 10px;
+  font-size: 12px;
+  font-family: 'Share Tech Mono', monospace;
+  color: #00cc00;
+  letter-spacing: 0.04em;
+  z-index: 10;
   display: flex;
-  justify-content: flex-start;
   align-items: center;
-  padding: 8px 16px 4px;
-  flex-shrink: 0;
-  gap: 10px;
+  gap: 7px;
+  line-height: 1;
 }
-
-.status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: 'VT323', 'Courier New', monospace;
-  font-size: 14px;
-  color: #00ff80;
-  text-shadow: 0 0 4px rgba(0,255,128,0.55);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-.status-dot {
-  width: 7px;
-  height: 7px;
+.live-dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 6px currentColor;
+  background: #00cc00;
+  animation: live-pulse 1.5s ease-in-out infinite;
 }
-.status.stale { color: #ffd60a; text-shadow: 0 0 4px rgba(255,214,10,0.6); }
-.status.error { color: #ff453a; text-shadow: 0 0 4px rgba(255,69,58,0.6); opacity: 1; }
+.live.error { color: #ff453a; }
+.live.error .live-dot { background: #ff453a; }
+.live.stale { color: #ffd60a; }
+.live.stale .live-dot { background: #ffd60a; }
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
 
-/* ==================== MAIN ==================== */
-
+/* ==================== MAIN — Swipe Pager ==================== */
 main {
-  flex: 1;
+  position: absolute;
+  top: 22px;
+  left: 0;
+  right: 0;
+  bottom: 18px;
   display: flex;
-  width: 100%;
   overflow-x: scroll;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
@@ -108,294 +90,270 @@ main::-webkit-scrollbar { display: none; }
 .page {
   flex: 0 0 100%;
   width: 100%;
+  height: 100%;
   scroll-snap-align: center;
   scroll-snap-stop: always;
-  padding: 6px 14px;
   display: flex;
-  flex-direction: column;
   align-items: stretch;
-  justify-content: center;
+  padding: 0 8px;
   gap: 8px;
 }
 
-.page-displays {
+.left-col {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  max-width: 720px;
-  align-self: center;
+  justify-content: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 4px 0;
+}
+
+.right-col {
+  width: 148px;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  flex-shrink: 0;
+  padding: 4px 0;
+}
+
+/* === Station block: line-marker OUTSIDE + panel === */
+.station-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   flex: 1;
   min-height: 0;
 }
 
-/* === Display housing === */
-.display-housing {
-  background: linear-gradient(180deg, #34343a 0%, #25252b 100%);
-  border-radius: 22px;
-  padding: 14px 14px 14px 18px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.09),
-    inset 0 -2px 0 rgba(0,0,0,0.4),
-    0 6px 24px rgba(0,0,0,0.65);
-  border: 1px solid #1a1a1f;
-  flex: 1;
-  position: relative;
-}
-
-/* Versenkte Schrauben in den Ecken (alle Housings) */
-.display-housing::after,
-.clock-housing::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  background:
-    radial-gradient(circle at 9px 9px, rgba(0,0,0,0.55) 1.6px, transparent 2.4px),
-    radial-gradient(circle at calc(100% - 9px) 9px, rgba(0,0,0,0.55) 1.6px, transparent 2.4px),
-    radial-gradient(circle at 9px calc(100% - 9px), rgba(0,0,0,0.55) 1.6px, transparent 2.4px),
-    radial-gradient(circle at calc(100% - 9px) calc(100% - 9px), rgba(0,0,0,0.55) 1.6px, transparent 2.4px);
-}
-
-/* Marken-Label unten rechts im Display */
-.brand {
-  position: absolute;
-  bottom: 3px;
-  right: 14px;
-  font-family: 'VT323', 'Courier New', monospace;
-  font-size: 10px;
-  color: rgba(255,176,0,0.32);
-  letter-spacing: 0.2em;
-  pointer-events: none;
-  z-index: 2;
-  text-transform: uppercase;
-}
-
 .line-marker {
-  font-family: 'Press Start 2P', 'Courier New', monospace;
-  color: #ff2d2d;
-  text-shadow: 0 0 8px rgba(255,45,45,0.5);
-  flex-shrink: 0;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  font-size: 30px;
-  min-width: 90px;
+  width: 76px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 86px;
+  font-weight: 900;
+  color: #e8001d;
   text-align: center;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
-.rows {
+.panel {
   flex: 1;
+  height: 100%;
+  background: #0d0d0d;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 12px 14px 16px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 8px;
+  position: relative;
   min-width: 0;
 }
 
 .row {
-  background: #050505;
-  border-radius: 8px;
-  padding: 8px 12px;
   display: flex;
   align-items: center;
   gap: 10px;
-  border: 1px solid #1a1a20;
-  box-shadow: inset 0 0 12px rgba(0,0,0,0.7);
-  min-height: 44px;
+  min-width: 0;
+  height: 54px;
+}
+
+.arrow {
+  font-size: 22px;
+  color: #ffaa00;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 .destination {
   flex: 1 1 0;
-  font-family: 'VT323', 'Courier New', monospace;
-  color: #ffb000;
-  text-shadow: 0 0 4px rgba(255,176,0,0.7), 0 0 10px rgba(255,176,0,0.35);
-  font-size: 26px;
-  letter-spacing: 0.08em;
-  line-height: 1;
+  font-size: 28px;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  letter-spacing: 2px;
+  color: #ffaa00;
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 0;
   max-width: 100%;
-}
-.destination::before {
-  content: '▸';
-  margin-right: 9px;
-  opacity: 0.55;
-  color: rgba(255,176,0,0.85);
-}
-
-.cds { display: flex; gap: 5px; flex-shrink: 0; }
-
-.cd {
-  width: 38px;
-  height: 30px;
-  background: rgba(255,176,0,0.10);
-  border: 1.5px solid rgba(255,176,0,0.5);
-  border-radius: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'VT323', 'Courier New', monospace;
-  color: #ffb000;
-  font-size: 24px;
   line-height: 1;
-  text-shadow: 0 0 4px rgba(255,176,0,0.7), 0 0 10px rgba(255,176,0,0.35);
-}
-.cd.now {
-  color: #00ff80;
-  border-color: rgba(0,255,128,0.6);
-  background: rgba(0,255,128,0.10);
-  text-shadow: 0 0 5px rgba(0,255,128,0.8), 0 0 12px rgba(0,255,128,0.4);
-  animation: pulse-now 1s ease-in-out infinite;
-}
-.cd.soon {
-  color: #ff6b35;
-  border-color: rgba(255,107,53,0.55);
-  background: rgba(255,107,53,0.10);
-  text-shadow: 0 0 4px rgba(255,107,53,0.7), 0 0 10px rgba(255,107,53,0.35);
-}
-.cd.empty { color: rgba(255,176,0,0.3); border-color: rgba(255,176,0,0.2); }
-
-@keyframes pulse-now {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.55; }
 }
 
-/* === Clock housing === */
-.clock-housing {
-  background: linear-gradient(180deg, #34343a 0%, #25252b 100%);
-  border-radius: 22px;
-  padding: 12px 12px 10px;
+.cds {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   gap: 6px;
   flex-shrink: 0;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.09),
-    inset 0 -2px 0 rgba(0,0,0,0.4),
-    0 6px 24px rgba(0,0,0,0.65);
-  border: 1px solid #1a1a1f;
-  align-self: center;
-  position: relative;
 }
 
-.analog-clock {
-  width: 100px;
-  height: 100px;
-  display: block;
-}
-
-.digital-clock {
-  font-family: 'VT323', 'Courier New', monospace;
-  color: #7ee87e;
-  font-size: 22px;
-  letter-spacing: 0.06em;
-  text-shadow: 0 0 5px rgba(126,232,126,0.7), 0 0 14px rgba(126,232,126,0.35);
+.cd {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  background: #1a0800;
+  border: 1px solid #b86000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 700;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  color: #ffaa00;
   line-height: 1;
-  margin-top: 2px;
+}
+.cd.hot {
+  background: #cc4400;
+  border-color: #ff6600;
+  color: #ffffff;
+}
+.cd.empty {
+  color: rgba(255,170,0,0.35);
+  border-color: rgba(184,96,0,0.45);
 }
 
-.date {
-  font-family: 'VT323', 'Courier New', monospace;
-  color: rgba(126,232,126,0.6);
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  text-shadow: 0 0 4px rgba(126,232,126,0.45);
-  line-height: 1;
-  text-transform: uppercase;
-  padding-bottom: 2px;
-}
-
-/* Trennlinie + Label im Clock-Housing */
-.clock-housing::before {
-  content: 'CET';
+.brand {
   position: absolute;
-  top: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'VT323', 'Courier New', monospace;
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  color: rgba(126,232,126,0.35);
-  z-index: 2;
+  bottom: 3px;
+  right: 8px;
+  font-size: 10px;
+  color: #664400;
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 0.12em;
   pointer-events: none;
 }
 
-/* ==================== PAGER ==================== */
-
-.pager {
+/* ==================== CLOCK HOUSING ==================== */
+.clock-housing {
+  width: 136px;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 14px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 6px 0 12px;
+  padding: 8px 8px 12px;
+  position: relative;
+  flex: 1;
+}
+
+.cet {
+  font-size: 11px;
+  color: #557755;
+  font-family: 'Share Tech Mono', monospace;
+  text-align: center;
+  letter-spacing: 0.15em;
+  line-height: 1;
+}
+
+.analog-clock {
+  width: 119px;
+  height: 119px;
+  margin-top: 6px;
+  display: block;
   flex-shrink: 0;
 }
 
+.digital-clock {
+  margin-top: auto;
+  font-size: 28px;
+  font-family: 'Share Tech Mono', monospace;
+  color: #00e000;
+  text-align: center;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.date {
+  font-size: 19px;
+  font-family: 'Share Tech Mono', monospace;
+  color: #00e000;
+  text-align: center;
+  margin-top: 6px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ==================== PAGER ==================== */
+.pager {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  z-index: 10;
+}
+
 .dot {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: rgba(255, 176, 0, 0.25);
-  transition: width 0.3s, background 0.3s, box-shadow 0.3s;
+  background: transparent;
+  border: 1px solid #ffaa00;
   cursor: pointer;
-  border: none;
   padding: 0;
 }
 .dot.active {
-  background: #ffb000;
-  box-shadow: 0 0 6px rgba(255, 176, 0, 0.75);
-  width: 20px;
-  border-radius: 3px;
+  background: #ffaa00;
 }
 
-/* ==================== LANDSCAPE — optimiert für iPhone 13 Pro 844×390 (2532×1170) ==================== */
-@media (orientation: landscape) {
-  header { padding: 4px 18px 0; }
-  .status { font-size: 13px; }
-  .page { flex-direction: row; align-items: center; padding: 4px 12px; gap: 12px; }
-  .page-displays { max-width: none; flex: 1; gap: 8px; min-width: 0; }
-  .display-housing { padding: 10px 14px 10px 18px; gap: 18px; flex: 1; min-height: 0; }
-  .line-marker { font-size: 36px; min-width: 110px; }
-  .rows { gap: 7px; }
-  .row { min-height: 46px; padding: 7px 14px; border-radius: 8px; }
-  .destination { font-size: 28px; letter-spacing: 0.09em; }
-  .cds { gap: 6px; }
-  .cd { width: 48px; height: 36px; font-size: 28px; border-radius: 4px; border-width: 2px; }
-  .clock-housing { padding: 18px 14px 12px; align-self: stretch; justify-content: center; gap: 8px; min-width: 150px; }
-  .analog-clock { width: 130px; height: 130px; }
-  .digital-clock { font-size: 26px; }
-  .date { font-size: 14px; }
-  .pager { padding: 4px 0 8px; }
+/* ==================== PORTRAIT FALLBACK ==================== */
+@media (orientation: portrait) {
+  .page {
+    flex-direction: column;
+    padding: 8px;
+    gap: 8px;
+    justify-content: center;
+  }
+  .right-col {
+    width: 100%;
+    height: 130px;
+    flex-shrink: 0;
+  }
+  .clock-housing {
+    width: auto;
+    flex: 1;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 10px;
+  }
+  .cet { display: none; }
+  .analog-clock { width: 100px; height: 100px; margin-top: 0; }
+  .digital-clock { margin-top: 0; font-size: 30px; }
+  .date { margin-top: 0; font-size: 18px; }
+  .line-marker { font-size: 64px; width: 58px; }
+  .station-block { gap: 8px; }
+  .panel { padding: 10px 12px 14px; gap: 6px; }
+  .row { height: 48px; gap: 8px; }
+  .destination { font-size: 24px; letter-spacing: 1.5px; }
+  .arrow { font-size: 20px; }
+  .cd { width: 42px; height: 42px; font-size: 22px; }
 }
 
-/* sehr schmale Landscape (alte iPhones) */
+/* ==================== SHORT LANDSCAPE ==================== */
 @media (orientation: landscape) and (max-height: 370px) {
-  .display-housing { padding: 7px 10px 7px 14px; gap: 14px; }
-  .line-marker { font-size: 28px; min-width: 86px; }
-  .row { min-height: 38px; padding: 5px 10px; }
-  .destination { font-size: 22px; }
-  .cd { width: 38px; height: 30px; font-size: 22px; }
-  .analog-clock { width: 88px; height: 88px; }
-  .digital-clock { font-size: 18px; }
-  .rows { gap: 5px; }
+  .line-marker { font-size: 72px; width: 64px; }
+  .panel { padding: 10px 12px 14px; }
+  .row { height: 46px; }
+  .destination { font-size: 24px; letter-spacing: 1.5px; }
+  .arrow { font-size: 20px; }
+  .cd { width: 44px; height: 44px; font-size: 22px; }
+  .analog-clock { width: 105px; height: 105px; }
+  .digital-clock { font-size: 24px; }
+  .date { font-size: 17px; }
 }
 </style>
 </head>
 <body>
-  <header>
-    <span class="status" id="status">
-      <span class="status-dot"></span>
-      <span id="statusText">LÄDT</span>
-    </span>
-  </header>
+  <div class="live" id="live">
+    <span class="live-dot"></span>
+    <span id="liveText">LIVE · ...</span>
+  </div>
 
   <main id="content"></main>
 
@@ -406,23 +364,21 @@ main::-webkit-scrollbar { display: none; }
   'use strict';
 
   // ==================== STATIONEN ====================
-  // RBL = Steig-ID (data.wien.gv.at → "Wiener Linien Echtzeit-Haltestellen")
-  // ZUM NACHTRAGEN: Tram 1 Knöllgasse, Bus 14A Sonnleitnergasse
   const STATIONS = [
     {
       name: 'Reumannplatz',
       line: 'U1',
       directions: [
-        { label: 'Leopoldau', rbl: 4101 },
-        { label: 'Oberlaa',   rbl: 4128 }
+        { label: 'Leopoldau',   rbl: 4101 },
+        { label: 'Alaudagasse', rbl: 4128 }
       ]
     },
     {
       name: 'Quellenstraße',
       line: '6',
       directions: [
-        { label: 'Burggasse',     rbl: 424 },
-        { label: 'Geiereckstr.',  rbl: 402 }
+        { label: 'Burggasse',          rbl: 424 },
+        { label: 'Siccardsburggasse',  rbl: 402 }
       ]
     },
     {
@@ -443,26 +399,32 @@ main::-webkit-scrollbar { display: none; }
     }
   ];
 
-  const REFRESH_MS = 20000;
+  const STATIONS_PER_PAGE = 2;
+  const REFRESH_MS = 15000;
+  const CLOCK_TICK_MS = 1000;
   const MAX_DEPARTURES = 3;
   const FETCH_TIMEOUT_MS = 5000;
+  const STALE_THRESHOLD_MS = 60000;
+  const ERROR_THRESHOLD_MS = 120000;
 
   const PROXIES = [
-    { name: 'corsproxy.io',  build: u => 'https://corsproxy.io/?' + encodeURIComponent(u) },
-    { name: 'allorigins',    build: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
-    { name: 'codetabs',      build: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
-    { name: 'thingproxy',    build: u => 'https://thingproxy.freeboard.io/fetch/' + u },
-    { name: 'corsproxy.org', build: u => 'https://corsproxy.org/?' + encodeURIComponent(u) },
-    { name: 'direkt',        build: u => u }
+    { name: 'corsproxy.io', build: u => 'https://corsproxy.io/?'  + encodeURIComponent(u) },
+    { name: 'allorigins',   build: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
+    { name: 'codetabs',     build: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
+    { name: 'thingproxy',   build: u => 'https://thingproxy.freeboard.io/fetch/' + u },
+    { name: 'corsproxy.org',build: u => 'https://corsproxy.org/?' + encodeURIComponent(u) },
+    { name: 'direkt',       build: u => u }
   ];
   let proxyIdx = 0;
   let activeProxy = '';
   let lastSuccess = 0;
+  let tickInFlight = false;
 
-  const $content    = document.getElementById('content');
-  const $status     = document.getElementById('status');
-  const $statusText = document.getElementById('statusText');
-  const $pager      = document.getElementById('pager');
+  const $content   = document.getElementById('content');
+  const $pager     = document.getElementById('pager');
+  const $live      = document.getElementById('live');
+  const $liveText  = document.getElementById('liveText');
+  const DAYS = ['SO','MO','DI','MI','DO','FR','SA'];
 
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
   function escapeHtml(s) {
@@ -471,50 +433,52 @@ main::-webkit-scrollbar { display: none; }
   }
 
   // ==================== ANALOG CLOCK SVG ====================
-  // Hände in <g> gewrapped, damit das SVG-transform-Attribut zuverlässig
-  // greift (vorher hat eine CSS-transition auf transform sie unsichtbar gemacht).
   function clockSvg() {
     const ticks = [];
-    for (let i = 0; i < 12; i++) {
-      const angle = (i * 30 - 90) * Math.PI / 180;
-      const cardinal = (i % 3 === 0);
-      const outer = 47;
-      const inner = cardinal ? 38 : 41;
+    for (let i = 0; i < 60; i++) {
+      const angle = (i * 6 - 90) * Math.PI / 180;
+      const major = (i % 5 === 0);
+      const outer = 48;
+      const inner = major ? 41 : 44.5;
       const x1 = (50 + Math.cos(angle) * inner).toFixed(2);
       const y1 = (50 + Math.sin(angle) * inner).toFixed(2);
       const x2 = (50 + Math.cos(angle) * outer).toFixed(2);
       const y2 = (50 + Math.sin(angle) * outer).toFixed(2);
-      ticks.push('<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke-width="' + (cardinal ? 3.5 : 2) + '"/>');
+      const w = major ? 2.2 : 0.9;
+      ticks.push('<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke-width="' + w + '"/>');
     }
     return '<svg class="analog-clock" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">' +
-      '<circle cx="50" cy="50" r="48" fill="#000" stroke="#1a1a20" stroke-width="1.5"/>' +
-      '<g stroke="#7ee87e" stroke-linecap="round">' + ticks.join('') + '</g>' +
+      '<circle cx="50" cy="50" r="49" fill="#000"/>' +
+      '<g stroke="#00e000" stroke-linecap="round">' + ticks.join('') + '</g>' +
       '<g class="hour-hand" transform="rotate(0 50 50)">' +
-        '<line x1="50" y1="50" x2="50" y2="30" stroke="#7ee87e" stroke-width="4.5" stroke-linecap="round"/>' +
+        '<line x1="50" y1="56" x2="50" y2="30" stroke="#00e000" stroke-width="3.6" stroke-linecap="round"/>' +
       '</g>' +
       '<g class="minute-hand" transform="rotate(0 50 50)">' +
-        '<line x1="50" y1="50" x2="50" y2="14" stroke="#7ee87e" stroke-width="3" stroke-linecap="round"/>' +
+        '<line x1="50" y1="58" x2="50" y2="13" stroke="#00e000" stroke-width="2.2" stroke-linecap="round"/>' +
       '</g>' +
-      '<circle cx="50" cy="50" r="3" fill="#7ee87e"/>' +
+      '<g class="second-hand" transform="rotate(0 50 50)">' +
+        '<line x1="50" y1="60" x2="50" y2="11" stroke="#00e000" stroke-width="0.9" stroke-linecap="round"/>' +
+      '</g>' +
+      '<circle cx="50" cy="50" r="2.2" fill="#00e000"/>' +
     '</svg>';
   }
 
   // ==================== SKELETON ====================
-
-  const STATIONS_PER_PAGE = 2;
-
-  function renderDisplay(s, si) {
-    return '<div class="display-housing">' +
+  function renderStationBlock(s, si) {
+    return '<div class="station-block" data-si="' + si + '">' +
       '<div class="line-marker">' + escapeHtml(s.line) + '</div>' +
-      '<div class="rows">' +
+      '<div class="panel">' +
         s.directions.map((d, di) =>
           '<div class="row">' +
+            '<span class="arrow">▶</span>' +
             '<span class="destination" id="dest-' + si + '-' + di + '">' + escapeHtml((d.label || '').toUpperCase()) + '</span>' +
-            '<div class="cds" id="cds-' + si + '-' + di + '">' + emptyCds() + '</div>' +
+            '<div class="cds" id="cds-' + si + '-' + di + '">' +
+              '<div class="cd empty">·</div><div class="cd empty">·</div><div class="cd empty">·</div>' +
+            '</div>' +
           '</div>'
         ).join('') +
+        '<div class="brand">WL · OGD</div>' +
       '</div>' +
-      '<div class="brand">WL · OGD</div>' +
     '</div>';
   }
 
@@ -526,13 +490,16 @@ main::-webkit-scrollbar { display: none; }
 
     $content.innerHTML = pages.map(page =>
       '<section class="page">' +
-        '<div class="page-displays">' +
-          page.stations.map((s, idx) => renderDisplay(s, page.startIdx + idx)).join('') +
+        '<div class="left-col">' +
+          page.stations.map((s, idx) => renderStationBlock(s, page.startIdx + idx)).join('') +
         '</div>' +
-        '<div class="clock-housing">' +
-          clockSvg() +
-          '<div class="digital-clock">--:--</div>' +
-          '<div class="date">-- --.--</div>' +
+        '<div class="right-col">' +
+          '<div class="clock-housing">' +
+            '<div class="cet">CET</div>' +
+            clockSvg() +
+            '<div class="digital-clock">--:--</div>' +
+            '<div class="date">-- --.--</div>' +
+          '</div>' +
         '</div>' +
       '</section>'
     ).join('');
@@ -549,9 +516,6 @@ main::-webkit-scrollbar { display: none; }
   }
 
   // ==================== CLOCKS ====================
-
-  const DAYS = ['SO','MO','DI','MI','DO','FR','SA'];
-
   function updateClocks() {
     const d = new Date();
     const h = d.getHours();
@@ -568,31 +532,32 @@ main::-webkit-scrollbar { display: none; }
       if (el.textContent !== dateStr) el.textContent = dateStr;
     });
 
+    const secondAngle = s * 6;
     const minuteAngle = m * 6 + s * 0.1;
     const hourAngle   = (h % 12) * 30 + m * 0.5;
     document.querySelectorAll('.hour-hand').forEach(el =>
       el.setAttribute('transform', 'rotate(' + hourAngle.toFixed(2) + ' 50 50)'));
     document.querySelectorAll('.minute-hand').forEach(el =>
       el.setAttribute('transform', 'rotate(' + minuteAngle.toFixed(2) + ' 50 50)'));
+    document.querySelectorAll('.second-hand').forEach(el =>
+      el.setAttribute('transform', 'rotate(' + secondAngle + ' 50 50)'));
   }
 
   // ==================== DEPARTURES ====================
-
-  function renderCd(countdown) {
-    let cls = '';
-    let text;
-    if (countdown === 0)      { cls = 'now';  text = '*'; }
-    else if (countdown <= 2)  { cls = 'soon'; text = String(countdown); }
-    else                      { text = String(countdown); }
-    return '<span class="cd ' + cls + '">' + text + '</span>';
+  function cleanTowards(s) {
+    if (!s) return '';
+    return s.split(/[,\/]|\s+bis\s+/i)[0].trim().toUpperCase();
   }
 
-  function emptyCds() {
-    return '<span class="cd empty">·</span><span class="cd empty">·</span><span class="cd empty">·</span>';
+  function emptyCdHTML() {
+    return '<div class="cd empty">·</div>';
+  }
+  function cdHTML(countdown, hot) {
+    const text = countdown === 0 ? '*' : String(countdown);
+    return '<div class="cd' + (hot ? ' hot' : '') + '">' + text + '</div>';
   }
 
   // ==================== FETCH ====================
-
   function fetchWithTimeout(url, ms) {
     return new Promise((resolve, reject) => {
       const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
@@ -611,7 +576,10 @@ main::-webkit-scrollbar { display: none; }
     }));
     if (!allRbls.length) return [];
 
-    const qs = allRbls.map(r => 'rbl=' + encodeURIComponent(r)).join('&');
+    // Cache-Busting: jeder Call kriegt einen frischen Query-Param mitten in
+    // der URL, damit weder Proxy noch Browser eine alte Response wiederverwenden.
+    const cacheBuster = '&_=' + Date.now();
+    const qs = allRbls.map(r => 'rbl=' + encodeURIComponent(r)).join('&') + cacheBuster;
     const apiUrl = 'https://www.wienerlinien.at/ogd_realtime/monitor?' + qs;
 
     let lastErr;
@@ -632,44 +600,53 @@ main::-webkit-scrollbar { display: none; }
     throw lastErr || new Error('all failed');
   }
 
+  // ==================== UPDATE ====================
   function update(monitors) {
     STATIONS.forEach((s, si) => {
-      s.directions.forEach((d, di) => {
-        const $dest = document.getElementById('dest-' + si + '-' + di);
-        const $cds  = document.getElementById('cds-'  + si + '-' + di);
-        if (!$dest || !$cds) return;
-
-        if (d.rbl === 0 || d.rbl == null) {
-          $cds.innerHTML = emptyCds();
-          return;
-        }
-
+      // Pro Richtung: Departures sammeln
+      const dirData = s.directions.map(d => {
+        if (!d.rbl) return { towards: d.label, countdowns: [] };
         const mon = monitors.find(m =>
           m && m.locationStop && m.locationStop.properties &&
           m.locationStop.properties.attributes &&
           String(m.locationStop.properties.attributes.rbl) === String(d.rbl)
         );
-
         if (!mon || !mon.lines || !mon.lines.length) {
-          $cds.innerHTML = emptyCds();
-          return;
+          return { towards: d.label, countdowns: [] };
         }
         const line = mon.lines.find(l => l.name === s.line) || mon.lines[0];
-        if (line.towards) {
-          // Nur erstes Ziel — API liefert oft Liste mit Zwischenstationen
-          const first = line.towards.split(/[,\/]|\s+bis\s+/i)[0].trim();
-          $dest.textContent = first.toUpperCase();
-        }
+        const towards = line.towards ? cleanTowards(line.towards) : (d.label || '').toUpperCase();
         const deps = (line.departures && line.departures.departure) || [];
-        const slots = [];
+        const countdowns = deps
+          .map(dep => dep && dep.departureTime && dep.departureTime.countdown)
+          .filter(c => typeof c === 'number')
+          .slice(0, MAX_DEPARTURES);
+        return { towards, countdowns };
+      });
+
+      // Hot-Highlight: kleinster Countdown im gesamten Panel
+      let minC = Infinity;
+      dirData.forEach(dd => dd.countdowns.forEach(c => { if (c < minC) minC = c; }));
+
+      // Rendern
+      let hotConsumed = false;
+      dirData.forEach((dd, di) => {
+        const $dest = document.getElementById('dest-' + si + '-' + di);
+        const $cds  = document.getElementById('cds-'  + si + '-' + di);
+        if (!$dest || !$cds) return;
+        if (dd.towards) $dest.textContent = dd.towards;
+        const html = [];
         for (let i = 0; i < MAX_DEPARTURES; i++) {
-          if (deps[i] && typeof deps[i].departureTime.countdown === 'number') {
-            slots.push(renderCd(deps[i].departureTime.countdown));
+          const c = dd.countdowns[i];
+          if (typeof c !== 'number') {
+            html.push(emptyCdHTML());
           } else {
-            slots.push('<span class="cd empty">·</span>');
+            const isHot = !hotConsumed && c === minC;
+            if (isHot) hotConsumed = true;
+            html.push(cdHTML(c, isHot));
           }
         }
-        $cds.innerHTML = slots.join('');
+        $cds.innerHTML = html.join('');
       });
     });
     lastSuccess = Date.now();
@@ -677,33 +654,37 @@ main::-webkit-scrollbar { display: none; }
   }
 
   function setStatus(state) {
-    $status.classList.remove('stale', 'error');
+    $live.classList.remove('stale', 'error');
     if (state === 'ok') {
-      $statusText.textContent = 'LIVE · ' + activeProxy.toUpperCase();
+      $liveText.textContent = 'LIVE · ' + activeProxy.toUpperCase();
     } else if (state === 'connecting') {
-      $status.classList.add('stale');
-      $statusText.textContent = 'VERBINDE…';
+      $live.classList.add('stale');
+      $liveText.textContent = 'VERBINDE...';
     } else if (state === 'stale') {
-      $status.classList.add('stale');
-      $statusText.textContent = 'RECONNECT';
+      $live.classList.add('stale');
+      const ago = Math.floor((Date.now() - lastSuccess) / 1000);
+      $liveText.textContent = 'STALE · ' + ago + 'S';
     } else {
-      $status.classList.add('error');
-      $statusText.textContent = 'OFFLINE';
+      $live.classList.add('error');
+      $liveText.textContent = 'OFFLINE';
     }
   }
 
   async function tick() {
+    if (tickInFlight) return;
+    tickInFlight = true;
     try {
       const monitors = await fetchMonitor();
       update(monitors);
     } catch (e) {
       const age = lastSuccess ? Date.now() - lastSuccess : Infinity;
-      setStatus(age > 90000 ? 'error' : 'stale');
+      setStatus(age > ERROR_THRESHOLD_MS ? 'error' : 'stale');
+    } finally {
+      tickInFlight = false;
     }
   }
 
   // ==================== PAGER ====================
-
   function updateActiveDot() {
     const width = $content.clientWidth;
     if (!width) return;
@@ -714,16 +695,12 @@ main::-webkit-scrollbar { display: none; }
   }
 
   let scrollRaf = null;
-  $content.addEventListener('scroll', () => {
+  function onScroll() {
     if (scrollRaf) cancelAnimationFrame(scrollRaf);
     scrollRaf = requestAnimationFrame(updateActiveDot);
-  }, { passive: true });
+  }
 
-  window.addEventListener('resize', updateActiveDot);
-  window.addEventListener('orientationchange', () => setTimeout(updateActiveDot, 200));
-
-  // ==================== WAKE LOCK ====================
-
+  // ==================== WAKE LOCK + LIFECYCLE ====================
   let wakeLock = null;
   async function requestWakeLock() {
     try {
@@ -733,21 +710,35 @@ main::-webkit-scrollbar { display: none; }
       }
     } catch (e) {}
   }
+
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
       tick();
       if (wakeLock === null) requestWakeLock();
     }
   });
+
+  // Falls die Page seit > STALE_THRESHOLD_MS keine Aktualisierung mehr
+  // gesehen hat (z. B. weil das setInterval pausiert wurde), erzwinge tick.
+  setInterval(() => {
+    const age = lastSuccess ? Date.now() - lastSuccess : Infinity;
+    if (age > STALE_THRESHOLD_MS) tick();
+  }, 5000);
+
+  window.addEventListener('focus', tick);
+  window.addEventListener('pageshow', tick);
+
   document.addEventListener('touchstart', requestWakeLock, { once: true, passive: true });
   document.addEventListener('click',      requestWakeLock, { once: true });
 
   // ==================== INIT ====================
-
   buildSkeleton();
+  $content.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', updateActiveDot);
+  window.addEventListener('orientationchange', () => setTimeout(updateActiveDot, 200));
   updateClocks();
   updateActiveDot();
-  setInterval(updateClocks, 1000);
+  setInterval(updateClocks, CLOCK_TICK_MS);
   setStatus('connecting');
   tick();
   setInterval(tick, REFRESH_MS);
