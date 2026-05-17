@@ -61,10 +61,13 @@ body {
 .led-white { color: #ffffff; }
 .led-green, .led-green-sm { color: #00e000; }
 .led-red {
-  font-family: 'Doto', 'Courier New', monospace;
-  font-weight: 900;
-  font-variation-settings: "ROND" 100;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
   color: #e8001d;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+          background-clip: text;
+  background-image: radial-gradient(circle, #e8001d 38%, transparent 44%);
+  background-size: 5px 5px;
 }
 
 /* ==================== LIVE INDICATOR ==================== */
@@ -155,12 +158,13 @@ main::-webkit-scrollbar { display: none; }
 }
 
 .line-marker {
-  width: 110px;
-  font-size: 64px;
+  width: 140px;
+  font-size: 44px;
   text-align: center;
   line-height: 1;
   flex-shrink: 0;
-  /* Doto red via .led-red class */
+  padding: 4px 0;
+  /* Press Start 2P + dot-clip red via .led-red class */
 }
 
 .panel {
@@ -346,7 +350,7 @@ main::-webkit-scrollbar { display: none; }
   .analog-clock { width: 100px; height: 100px; margin-top: 0; }
   .digital-clock { margin-top: 0; font-size: 28px; }
   .date { margin-top: 0; font-size: 16px; }
-  .line-marker { font-size: 48px; width: 80px; }
+  .line-marker { font-size: 30px; width: 100px; }
   .station-block { gap: 8px; }
   .panel { padding: 10px 12px 14px; gap: 6px; }
   .row { height: 48px; gap: 8px; }
@@ -358,7 +362,7 @@ main::-webkit-scrollbar { display: none; }
 
 /* ==================== SHORT LANDSCAPE ==================== */
 @media (orientation: landscape) and (max-height: 370px) {
-  .line-marker { font-size: 50px; width: 90px; }
+  .line-marker { font-size: 30px; width: 100px; }
   .panel { padding: 10px 12px 14px; }
   .row { height: 46px; }
   .destination { font-size: 24px; }
