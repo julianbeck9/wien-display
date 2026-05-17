@@ -14,7 +14,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -37,6 +37,68 @@ body {
   position: relative;
   min-height: 100%;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* ==================== LED DOT-MATRIX UTILITY ====================
+   Trick: chunky/mono Font wird auf transparent gestellt, ein dot-pattern
+   Background wird durch die Buchstabenform geclippt. Ergebnis: jeder Buchstabe
+   wird aus diskreten LED-Punkten gerendert wie auf echter Dot-Matrix.
+*/
+.led-amber-sm {
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+          background-clip: text;
+  background-image: radial-gradient(circle, #ffaa00 38%, transparent 42%);
+  background-size: 3px 3px;
+  color: #ffaa00;
+}
+.led-amber-md {
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+          background-clip: text;
+  background-image: radial-gradient(circle, #ffaa00 38%, transparent 42%);
+  background-size: 3.5px 3.5px;
+  color: #ffaa00;
+}
+.led-white {
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+          background-clip: text;
+  background-image: radial-gradient(circle, #ffffff 38%, transparent 42%);
+  background-size: 3.5px 3.5px;
+  color: #ffffff;
+}
+.led-amber-muted {
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+          background-clip: text;
+  background-image: radial-gradient(circle, rgba(255,170,0,0.4) 38%, transparent 42%);
+  background-size: 3px 3px;
+  color: rgba(255,170,0,0.4);
+}
+.led-red {
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+          background-clip: text;
+  background-image: radial-gradient(circle, #e8001d 40%, transparent 44%);
+  background-size: 5px 5px;
+  color: #e8001d;
+}
+.led-green {
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+          background-clip: text;
+  background-image: radial-gradient(circle, #00e000 38%, transparent 42%);
+  background-size: 3.5px 3.5px;
+  color: #00e000;
+}
+.led-green-sm {
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+          background-clip: text;
+  background-image: radial-gradient(circle, #00e000 38%, transparent 42%);
+  background-size: 3px 3px;
+  color: #00e000;
 }
 
 /* ==================== LIVE INDICATOR ==================== */
@@ -70,7 +132,7 @@ body {
   50%      { opacity: 0.3; }
 }
 
-/* ==================== MAIN — Swipe Pager ==================== */
+/* ==================== MAIN ==================== */
 main {
   position: absolute;
   top: 22px;
@@ -118,7 +180,6 @@ main::-webkit-scrollbar { display: none; }
   padding: 4px 0;
 }
 
-/* === Station block: line-marker OUTSIDE + panel === */
 .station-block {
   display: flex;
   align-items: center;
@@ -129,13 +190,13 @@ main::-webkit-scrollbar { display: none; }
 
 .line-marker {
   width: 76px;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 86px;
-  font-weight: 900;
-  color: #e8001d;
+  font-family: 'Press Start 2P', 'Share Tech Mono', monospace;
+  font-size: 56px;
+  font-weight: 400;
   text-align: center;
   line-height: 1;
   flex-shrink: 0;
+  /* dot-matrix red via .led-red class */
 }
 
 .panel {
@@ -144,7 +205,7 @@ main::-webkit-scrollbar { display: none; }
   background: #0d0d0d;
   border: 1px solid #2a2a2a;
   border-radius: 10px;
-  padding: 12px 14px 16px;
+  padding: 12px 14px 18px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -170,10 +231,9 @@ main::-webkit-scrollbar { display: none; }
 
 .destination {
   flex: 1 1 0;
-  font-size: 28px;
+  font-size: 26px;
   font-family: 'Share Tech Mono', 'Courier New', monospace;
   letter-spacing: 2px;
-  color: #ffaa00;
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
@@ -181,6 +241,7 @@ main::-webkit-scrollbar { display: none; }
   min-width: 0;
   max-width: 100%;
   line-height: 1;
+  /* dot-matrix amber via .led-amber-sm class */
 }
 
 .cds {
@@ -198,20 +259,20 @@ main::-webkit-scrollbar { display: none; }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  font-weight: 700;
-  font-family: 'Share Tech Mono', 'Courier New', monospace;
-  color: #ffaa00;
-  line-height: 1;
+  position: relative;
+  overflow: hidden;
 }
 .cd.hot {
   background: #cc4400;
   border-color: #ff6600;
-  color: #ffffff;
 }
-.cd.empty {
-  color: rgba(255,170,0,0.35);
-  border-color: rgba(184,96,0,0.45);
+
+.cd-num {
+  font-size: 30px;
+  font-weight: 700;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  line-height: 1;
+  /* dot-matrix via .led-* class added in JS */
 }
 
 .brand {
@@ -258,23 +319,23 @@ main::-webkit-scrollbar { display: none; }
 
 .digital-clock {
   margin-top: auto;
-  font-size: 28px;
+  font-size: 30px;
   font-family: 'Share Tech Mono', monospace;
-  color: #00e000;
   text-align: center;
   line-height: 1;
   letter-spacing: 0.04em;
+  /* dot-matrix green via .led-green class */
 }
 
 .date {
-  font-size: 19px;
+  font-size: 20px;
   font-family: 'Share Tech Mono', monospace;
-  color: #00e000;
   text-align: center;
   margin-top: 6px;
   line-height: 1;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  /* dot-matrix green via .led-green-sm class */
 }
 
 /* ==================== PAGER ==================== */
@@ -326,25 +387,27 @@ main::-webkit-scrollbar { display: none; }
   .analog-clock { width: 100px; height: 100px; margin-top: 0; }
   .digital-clock { margin-top: 0; font-size: 30px; }
   .date { margin-top: 0; font-size: 18px; }
-  .line-marker { font-size: 64px; width: 58px; }
+  .line-marker { font-size: 44px; width: 60px; }
   .station-block { gap: 8px; }
   .panel { padding: 10px 12px 14px; gap: 6px; }
   .row { height: 48px; gap: 8px; }
-  .destination { font-size: 24px; letter-spacing: 1.5px; }
+  .destination { font-size: 22px; letter-spacing: 1.5px; }
   .arrow { font-size: 20px; }
-  .cd { width: 42px; height: 42px; font-size: 22px; }
+  .cd { width: 42px; height: 42px; }
+  .cd-num { font-size: 24px; }
 }
 
 /* ==================== SHORT LANDSCAPE ==================== */
 @media (orientation: landscape) and (max-height: 370px) {
-  .line-marker { font-size: 72px; width: 64px; }
+  .line-marker { font-size: 46px; width: 66px; }
   .panel { padding: 10px 12px 14px; }
   .row { height: 46px; }
-  .destination { font-size: 24px; letter-spacing: 1.5px; }
+  .destination { font-size: 22px; letter-spacing: 1.5px; }
   .arrow { font-size: 20px; }
-  .cd { width: 44px; height: 44px; font-size: 22px; }
+  .cd { width: 44px; height: 44px; }
+  .cd-num { font-size: 24px; }
   .analog-clock { width: 105px; height: 105px; }
-  .digital-clock { font-size: 24px; }
+  .digital-clock { font-size: 26px; }
   .date { font-size: 17px; }
 }
 </style>
@@ -363,7 +426,6 @@ main::-webkit-scrollbar { display: none; }
 (function() {
   'use strict';
 
-  // ==================== STATIONEN ====================
   const STATIONS = [
     {
       name: 'Reumannplatz',
@@ -466,14 +528,16 @@ main::-webkit-scrollbar { display: none; }
   // ==================== SKELETON ====================
   function renderStationBlock(s, si) {
     return '<div class="station-block" data-si="' + si + '">' +
-      '<div class="line-marker">' + escapeHtml(s.line) + '</div>' +
+      '<div class="line-marker led-red">' + escapeHtml(s.line) + '</div>' +
       '<div class="panel">' +
         s.directions.map((d, di) =>
           '<div class="row">' +
             '<span class="arrow">▶</span>' +
-            '<span class="destination" id="dest-' + si + '-' + di + '">' + escapeHtml((d.label || '').toUpperCase()) + '</span>' +
+            '<span class="destination led-amber-sm" id="dest-' + si + '-' + di + '">' + escapeHtml((d.label || '').toUpperCase()) + '</span>' +
             '<div class="cds" id="cds-' + si + '-' + di + '">' +
-              '<div class="cd empty">·</div><div class="cd empty">·</div><div class="cd empty">·</div>' +
+              '<div class="cd"><span class="cd-num led-amber-muted">·</span></div>' +
+              '<div class="cd"><span class="cd-num led-amber-muted">·</span></div>' +
+              '<div class="cd"><span class="cd-num led-amber-muted">·</span></div>' +
             '</div>' +
           '</div>'
         ).join('') +
@@ -497,8 +561,8 @@ main::-webkit-scrollbar { display: none; }
           '<div class="clock-housing">' +
             '<div class="cet">CET</div>' +
             clockSvg() +
-            '<div class="digital-clock">--:--</div>' +
-            '<div class="date">-- --.--</div>' +
+            '<div class="digital-clock led-green">--:--</div>' +
+            '<div class="date led-green-sm">-- --.--</div>' +
           '</div>' +
         '</div>' +
       '</section>'
@@ -550,11 +614,12 @@ main::-webkit-scrollbar { display: none; }
   }
 
   function emptyCdHTML() {
-    return '<div class="cd empty">·</div>';
+    return '<div class="cd"><span class="cd-num led-amber-muted">·</span></div>';
   }
   function cdHTML(countdown, hot) {
     const text = countdown === 0 ? '*' : String(countdown);
-    return '<div class="cd' + (hot ? ' hot' : '') + '">' + text + '</div>';
+    const cls = hot ? 'led-white' : 'led-amber-md';
+    return '<div class="cd' + (hot ? ' hot' : '') + '"><span class="cd-num ' + cls + '">' + text + '</span></div>';
   }
 
   // ==================== FETCH ====================
@@ -576,8 +641,6 @@ main::-webkit-scrollbar { display: none; }
     }));
     if (!allRbls.length) return [];
 
-    // Cache-Busting: jeder Call kriegt einen frischen Query-Param mitten in
-    // der URL, damit weder Proxy noch Browser eine alte Response wiederverwenden.
     const cacheBuster = '&_=' + Date.now();
     const qs = allRbls.map(r => 'rbl=' + encodeURIComponent(r)).join('&') + cacheBuster;
     const apiUrl = 'https://www.wienerlinien.at/ogd_realtime/monitor?' + qs;
@@ -603,7 +666,6 @@ main::-webkit-scrollbar { display: none; }
   // ==================== UPDATE ====================
   function update(monitors) {
     STATIONS.forEach((s, si) => {
-      // Pro Richtung: Departures sammeln
       const dirData = s.directions.map(d => {
         if (!d.rbl) return { towards: d.label, countdowns: [] };
         const mon = monitors.find(m =>
@@ -624,11 +686,9 @@ main::-webkit-scrollbar { display: none; }
         return { towards, countdowns };
       });
 
-      // Hot-Highlight: kleinster Countdown im gesamten Panel
       let minC = Infinity;
       dirData.forEach(dd => dd.countdowns.forEach(c => { if (c < minC) minC = c; }));
 
-      // Rendern
       let hotConsumed = false;
       dirData.forEach((dd, di) => {
         const $dest = document.getElementById('dest-' + si + '-' + di);
@@ -718,8 +778,6 @@ main::-webkit-scrollbar { display: none; }
     }
   });
 
-  // Falls die Page seit > STALE_THRESHOLD_MS keine Aktualisierung mehr
-  // gesehen hat (z. B. weil das setInterval pausiert wurde), erzwinge tick.
   setInterval(() => {
     const age = lastSuccess ? Date.now() - lastSuccess : Infinity;
     if (age > STALE_THRESHOLD_MS) tick();
