@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Wien Öffis">
+<meta name="theme-color" content="#0a0a0c">
+<title>Wien Öffis – Live</title>
+
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20rx%3D%2240%22%20fill%3D%22%232c2c32%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22152%22%20height%3D%22152%22%20rx%3D%2222%22%20fill%3D%22%23000%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%22122%22%20font-family%3D%22Helvetica%2C-apple-system%2Csans-serif%22%20font-size%3D%2272%22%20font-weight%3D%22900%22%20fill%3D%22%23ff2d2d%22%20text-anchor%3D%22middle%22%3EU1%3C%2Ftext%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22148%22%20r%3D%223%22%20fill%3D%22%2300ff80%22%2F%3E%3C%2Fsvg%3E">
+
+<link rel="manifest" href="data:application/manifest+json;utf8,%7B%22name%22%3A%22Wien%20%C3%96ffis%22%2C%22short_name%22%3A%22Wien%20%C3%96ffis%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22fullscreen%22%2C%22orientation%22%3A%22landscape%22%2C%22background_color%22%3A%22%230a0a0c%22%2C%22theme_color%22%3A%22%230a0a0c%22%7D">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #0a0a0c;
+  color: #ffb000;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+body {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 100%;
+  background: radial-gradient(ellipse at 50% 30%, #16161c 0%, #0a0a0c 70%), #0a0a0c;
+}
+
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,
+    rgba(255,255,255,0.025) 0px,
+    rgba(255,255,255,0.025) 1px,
+    transparent 1px,
+    transparent 3px);
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* ==================== HEADER ==================== */
+
+header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 8px 16px 4px;
+  flex-shrink: 0;
+  gap: 10px;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 14px;
+  color: #00ff80;
+  text-shadow: 0 0 4px rgba(0,255,128,0.55);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}
+.status.stale { color: #ffd60a; text-shadow: 0 0 4px rgba(255,214,10,0.6); }
+.status.error { color: #ff453a; text-shadow: 0 0 4px rgba(255,69,58,0.6); opacity: 1; }
+
+/* ==================== MAIN ==================== */
+
+main {
+  flex: 1;
+  display: flex;
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+main::-webkit-scrollbar { display: none; }
+
+.station {
+  flex: 0 0 100%;
+  width: 100%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.station-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 720px;
+  align-items: stretch;
+}
+
+/* === Display housing === */
+.display-housing {
+  background: #2c2c32;
+  border-radius: 22px;
+  padding: 14px 14px 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 -2px 0 rgba(0,0,0,0.35),
+    0 6px 24px rgba(0,0,0,0.6);
+  border: 1px solid #1a1a1f;
+  flex: 1;
+}
+
+.line-marker {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  color: #ff2d2d;
+  text-shadow: 0 0 8px rgba(255,45,45,0.5);
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-size: 30px;
+}
+
+.rows {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.row {
+  background: #050505;
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #1a1a20;
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.7);
+  min-height: 44px;
+}
+
+.destination {
+  flex: 1;
+  font-family: 'VT323', 'Courier New', monospace;
+  color: #ffb000;
+  text-shadow: 0 0 4px rgba(255,176,0,0.7), 0 0 10px rgba(255,176,0,0.35);
+  font-size: 26px;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  min-width: 0;
+}
+
+.cds { display: flex; gap: 5px; flex-shrink: 0; }
+
+.cd {
+  width: 38px;
+  height: 30px;
+  background: rgba(255,176,0,0.10);
+  border: 1.5px solid rgba(255,176,0,0.5);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'VT323', 'Courier New', monospace;
+  color: #ffb000;
+  font-size: 24px;
+  line-height: 1;
+  text-shadow: 0 0 4px rgba(255,176,0,0.7), 0 0 10px rgba(255,176,0,0.35);
+}
+.cd.now {
+  color: #00ff80;
+  border-color: rgba(0,255,128,0.6);
+  background: rgba(0,255,128,0.10);
+  text-shadow: 0 0 5px rgba(0,255,128,0.8), 0 0 12px rgba(0,255,128,0.4);
+  animation: pulse-now 1s ease-in-out infinite;
+}
+.cd.soon {
+  color: #ff6b35;
+  border-color: rgba(255,107,53,0.55);
+  background: rgba(255,107,53,0.10);
+  text-shadow: 0 0 4px rgba(255,107,53,0.7), 0 0 10px rgba(255,107,53,0.35);
+}
+.cd.empty { color: rgba(255,176,0,0.3); border-color: rgba(255,176,0,0.2); }
+
+@keyframes pulse-now {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+
+/* === Clock housing === */
+.clock-housing {
+  background: #2c2c32;
+  border-radius: 22px;
+  padding: 10px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-shrink: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 -2px 0 rgba(0,0,0,0.35),
+    0 6px 24px rgba(0,0,0,0.6);
+  border: 1px solid #1a1a1f;
+  align-self: center;
+}
+
+.analog-clock {
+  width: 100px;
+  height: 100px;
+  display: block;
+}
+
+.digital-clock {
+  font-family: 'VT323', 'Courier New', monospace;
+  color: #7ee87e;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 5px rgba(126,232,126,0.7), 0 0 14px rgba(126,232,126,0.35);
+  line-height: 1;
+  padding-bottom: 4px;
+}
+
+/* ==================== PAGER ==================== */
+
+.pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0 12px;
+  flex-shrink: 0;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 176, 0, 0.25);
+  transition: width 0.3s, background 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+.dot.active {
+  background: #ffb000;
+  box-shadow: 0 0 6px rgba(255, 176, 0, 0.75);
+  width: 20px;
+  border-radius: 3px;
+}
+
+/* ==================== LANDSCAPE — optimiert für iPhone 13 Pro 844×390 (2532×1170) ==================== */
+@media (orientation: landscape) {
+  header { padding: 4px 18px 0; }
+  .status { font-size: 13px; }
+  .station { padding: 4px 14px; }
+  .station-inner { flex-direction: row; max-width: none; align-items: stretch; gap: 12px; }
+  .display-housing { padding: 14px 16px 14px 22px; gap: 22px; }
+  .line-marker { font-size: 48px; }
+  .rows { gap: 10px; }
+  .row { min-height: 60px; padding: 12px 16px; border-radius: 10px; }
+  .destination { font-size: 36px; letter-spacing: 0.1em; }
+  .cds { gap: 7px; }
+  .cd { width: 56px; height: 44px; font-size: 34px; border-radius: 4px; border-width: 2px; }
+  .clock-housing { padding: 12px 14px 8px; align-self: stretch; }
+  .analog-clock { width: 138px; height: 138px; }
+  .digital-clock { font-size: 28px; padding-bottom: 2px; padding-top: 4px; }
+  .pager { padding: 4px 0 8px; }
+}
+
+/* sehr schmale Landscape (alte iPhones) */
+@media (orientation: landscape) and (max-height: 370px) {
+  .display-housing { padding: 10px 12px 10px 16px; gap: 16px; }
+  .line-marker { font-size: 36px; }
+  .row { min-height: 48px; padding: 8px 12px; }
+  .destination { font-size: 28px; }
+  .cd { width: 42px; height: 34px; font-size: 26px; }
+  .analog-clock { width: 100px; height: 100px; }
+  .digital-clock { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+  <header>
+    <span class="status" id="status">
+      <span class="status-dot"></span>
+      <span id="statusText">LÄDT</span>
+    </span>
+  </header>
+
+  <main id="content"></main>
+
+  <div class="pager" id="pager"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ==================== STATIONEN ====================
+  // RBL = Steig-ID (data.wien.gv.at → "Wiener Linien Echtzeit-Haltestellen")
+  // ZUM NACHTRAGEN: Tram 1 Knöllgasse, Bus 14A Sonnleitnergasse
+  const STATIONS = [
+    {
+      name: 'Reumannplatz',
+      line: 'U1',
+      directions: [
+        { label: 'Leopoldau', rbl: 4101 },
+        { label: 'Oberlaa',   rbl: 4128 }
+      ]
+    },
+    {
+      name: 'Quellenstraße',
+      line: '6',
+      directions: [
+        { label: 'Burggasse',     rbl: 424 },
+        { label: 'Geiereckstr.',  rbl: 402 }
+      ]
+    },
+    {
+      name: 'Knöllgasse',
+      line: '1',
+      directions: [
+        { label: 'Stefan-Fadinger-Pl.', rbl: 401 },
+        { label: 'Prater Hauptallee',   rbl: 425 }
+      ]
+    },
+    {
+      name: 'Sonnleithnergasse',
+      line: '14A',
+      directions: [
+        { label: 'Reumannplatz', rbl: 758 },
+        { label: 'Hetzendorf',   rbl: 767 }
+      ]
+    }
+  ];
+
+  const REFRESH_MS = 20000;
+  const MAX_DEPARTURES = 3;
+  const FETCH_TIMEOUT_MS = 5000;
+
+  const PROXIES = [
+    { name: 'corsproxy.io',  build: u => 'https://corsproxy.io/?' + encodeURIComponent(u) },
+    { name: 'allorigins',    build: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
+    { name: 'codetabs',      build: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
+    { name: 'thingproxy',    build: u => 'https://thingproxy.freeboard.io/fetch/' + u },
+    { name: 'corsproxy.org', build: u => 'https://corsproxy.org/?' + encodeURIComponent(u) },
+    { name: 'direkt',        build: u => u }
+  ];
+  let proxyIdx = 0;
+  let activeProxy = '';
+  let lastSuccess = 0;
+
+  const $content    = document.getElementById('content');
+  const $status     = document.getElementById('status');
+  const $statusText = document.getElementById('statusText');
+  const $pager      = document.getElementById('pager');
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, m =>
+      ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  // ==================== ANALOG CLOCK SVG ====================
+  // Hände in <g> gewrapped, damit das SVG-transform-Attribut zuverlässig
+  // greift (vorher hat eine CSS-transition auf transform sie unsichtbar gemacht).
+  function clockSvg() {
+    const ticks = [];
+    for (let i = 0; i < 12; i++) {
+      const angle = (i * 30 - 90) * Math.PI / 180;
+      const cardinal = (i % 3 === 0);
+      const outer = 47;
+      const inner = cardinal ? 38 : 41;
+      const x1 = (50 + Math.cos(angle) * inner).toFixed(2);
+      const y1 = (50 + Math.sin(angle) * inner).toFixed(2);
+      const x2 = (50 + Math.cos(angle) * outer).toFixed(2);
+      const y2 = (50 + Math.sin(angle) * outer).toFixed(2);
+      ticks.push('<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke-width="' + (cardinal ? 3.5 : 2) + '"/>');
+    }
+    return '<svg class="analog-clock" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">' +
+      '<circle cx="50" cy="50" r="48" fill="#000" stroke="#1a1a20" stroke-width="1.5"/>' +
+      '<g stroke="#7ee87e" stroke-linecap="round">' + ticks.join('') + '</g>' +
+      '<g class="hour-hand" transform="rotate(0 50 50)">' +
+        '<line x1="50" y1="50" x2="50" y2="30" stroke="#7ee87e" stroke-width="4.5" stroke-linecap="round"/>' +
+      '</g>' +
+      '<g class="minute-hand" transform="rotate(0 50 50)">' +
+        '<line x1="50" y1="50" x2="50" y2="14" stroke="#7ee87e" stroke-width="3" stroke-linecap="round"/>' +
+      '</g>' +
+      '<circle cx="50" cy="50" r="3" fill="#7ee87e"/>' +
+    '</svg>';
+  }
+
+  // ==================== SKELETON ====================
+
+  function buildSkeleton() {
+    $content.innerHTML = STATIONS.map((s, si) =>
+      '<section class="station" data-idx="' + si + '">' +
+        '<div class="station-inner">' +
+          '<div class="display-housing">' +
+            '<div class="line-marker">' + escapeHtml(s.line) + '</div>' +
+            '<div class="rows">' +
+              s.directions.map((d, di) =>
+                '<div class="row">' +
+                  '<span class="destination" id="dest-' + si + '-' + di + '">' + escapeHtml((d.label || '').toUpperCase()) + '</span>' +
+                  '<div class="cds" id="cds-' + si + '-' + di + '">' + emptyCds() + '</div>' +
+                '</div>'
+              ).join('') +
+            '</div>' +
+          '</div>' +
+          '<div class="clock-housing">' +
+            clockSvg() +
+            '<div class="digital-clock">--:--</div>' +
+          '</div>' +
+        '</div>' +
+      '</section>'
+    ).join('');
+
+    $pager.innerHTML = STATIONS.map((_, i) =>
+      '<button class="dot" data-idx="' + i + '" aria-label="Station ' + (i + 1) + '"></button>'
+    ).join('');
+    $pager.querySelectorAll('.dot').forEach(d => {
+      d.addEventListener('click', () => {
+        const idx = parseInt(d.dataset.idx, 10);
+        $content.scrollTo({ left: idx * $content.clientWidth, behavior: 'smooth' });
+      });
+    });
+  }
+
+  // ==================== CLOCKS ====================
+
+  function updateClocks() {
+    const d = new Date();
+    const h = d.getHours();
+    const m = d.getMinutes();
+    const s = d.getSeconds();
+
+    const digital = pad(h) + ':' + pad(m);
+    document.querySelectorAll('.digital-clock').forEach(el => {
+      if (el.textContent !== digital) el.textContent = digital;
+    });
+
+    const minuteAngle = m * 6 + s * 0.1;
+    const hourAngle   = (h % 12) * 30 + m * 0.5;
+    document.querySelectorAll('.hour-hand').forEach(el =>
+      el.setAttribute('transform', 'rotate(' + hourAngle.toFixed(2) + ' 50 50)'));
+    document.querySelectorAll('.minute-hand').forEach(el =>
+      el.setAttribute('transform', 'rotate(' + minuteAngle.toFixed(2) + ' 50 50)'));
+  }
+
+  // ==================== DEPARTURES ====================
+
+  function renderCd(countdown) {
+    let cls = '';
+    let text;
+    if (countdown === 0)      { cls = 'now';  text = '*'; }
+    else if (countdown <= 2)  { cls = 'soon'; text = String(countdown); }
+    else                      { text = String(countdown); }
+    return '<span class="cd ' + cls + '">' + text + '</span>';
+  }
+
+  function emptyCds() {
+    return '<span class="cd empty">·</span><span class="cd empty">·</span><span class="cd empty">·</span>';
+  }
+
+  // ==================== FETCH ====================
+
+  function fetchWithTimeout(url, ms) {
+    return new Promise((resolve, reject) => {
+      const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+      const opts = { cache: 'no-store' };
+      if (ctrl) opts.signal = ctrl.signal;
+      const timer = setTimeout(() => { if (ctrl) ctrl.abort(); reject(new Error('timeout')); }, ms);
+      fetch(url, opts).then(res => { clearTimeout(timer); resolve(res); })
+                     .catch(err => { clearTimeout(timer); reject(err); });
+    });
+  }
+
+  async function fetchMonitor() {
+    const allRbls = [];
+    STATIONS.forEach(s => s.directions.forEach(d => {
+      if (d.rbl != null && d.rbl !== '' && d.rbl !== 0) allRbls.push(d.rbl);
+    }));
+    if (!allRbls.length) return [];
+
+    const qs = allRbls.map(r => 'rbl=' + encodeURIComponent(r)).join('&');
+    const apiUrl = 'https://www.wienerlinien.at/ogd_realtime/monitor?' + qs;
+
+    let lastErr;
+    for (let i = 0; i < PROXIES.length; i++) {
+      const idx = (proxyIdx + i) % PROXIES.length;
+      const p = PROXIES[idx];
+      try {
+        const res = await fetchWithTimeout(p.build(apiUrl), FETCH_TIMEOUT_MS);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const text = await res.text();
+        const data = JSON.parse(text);
+        if (!data || !data.data || !data.data.monitors) throw new Error('invalid');
+        proxyIdx = idx;
+        activeProxy = p.name;
+        return data.data.monitors;
+      } catch (e) { lastErr = e; }
+    }
+    throw lastErr || new Error('all failed');
+  }
+
+  function update(monitors) {
+    STATIONS.forEach((s, si) => {
+      s.directions.forEach((d, di) => {
+        const $dest = document.getElementById('dest-' + si + '-' + di);
+        const $cds  = document.getElementById('cds-'  + si + '-' + di);
+        if (!$dest || !$cds) return;
+
+        if (d.rbl === 0 || d.rbl == null) {
+          $cds.innerHTML = emptyCds();
+          return;
+        }
+
+        const mon = monitors.find(m =>
+          m && m.locationStop && m.locationStop.properties &&
+          m.locationStop.properties.attributes &&
+          String(m.locationStop.properties.attributes.rbl) === String(d.rbl)
+        );
+
+        if (!mon || !mon.lines || !mon.lines.length) {
+          $cds.innerHTML = emptyCds();
+          return;
+        }
+        const line = mon.lines.find(l => l.name === s.line) || mon.lines[0];
+        if (line.towards) $dest.textContent = line.towards.trim().toUpperCase();
+        const deps = (line.departures && line.departures.departure) || [];
+        const slots = [];
+        for (let i = 0; i < MAX_DEPARTURES; i++) {
+          if (deps[i] && typeof deps[i].departureTime.countdown === 'number') {
+            slots.push(renderCd(deps[i].departureTime.countdown));
+          } else {
+            slots.push('<span class="cd empty">·</span>');
+          }
+        }
+        $cds.innerHTML = slots.join('');
+      });
+    });
+    lastSuccess = Date.now();
+    setStatus('ok');
+  }
+
+  function setStatus(state) {
+    $status.classList.remove('stale', 'error');
+    if (state === 'ok') {
+      $statusText.textContent = 'LIVE · ' + activeProxy.toUpperCase();
+    } else if (state === 'connecting') {
+      $status.classList.add('stale');
+      $statusText.textContent = 'VERBINDE…';
+    } else if (state === 'stale') {
+      $status.classList.add('stale');
+      $statusText.textContent = 'RECONNECT';
+    } else {
+      $status.classList.add('error');
+      $statusText.textContent = 'OFFLINE';
+    }
+  }
+
+  async function tick() {
+    try {
+      const monitors = await fetchMonitor();
+      update(monitors);
+    } catch (e) {
+      const age = lastSuccess ? Date.now() - lastSuccess : Infinity;
+      setStatus(age > 90000 ? 'error' : 'stale');
+    }
+  }
+
+  // ==================== PAGER ====================
+
+  function updateActiveDot() {
+    const width = $content.clientWidth;
+    if (!width) return;
+    const idx = Math.round($content.scrollLeft / width);
+    $pager.querySelectorAll('.dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === idx);
+    });
+  }
+
+  let scrollRaf = null;
+  $content.addEventListener('scroll', () => {
+    if (scrollRaf) cancelAnimationFrame(scrollRaf);
+    scrollRaf = requestAnimationFrame(updateActiveDot);
+  }, { passive: true });
+
+  window.addEventListener('resize', updateActiveDot);
+  window.addEventListener('orientationchange', () => setTimeout(updateActiveDot, 200));
+
+  // ==================== WAKE LOCK ====================
+
+  let wakeLock = null;
+  async function requestWakeLock() {
+    try {
+      if ('wakeLock' in navigator) {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      }
+    } catch (e) {}
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      tick();
+      if (wakeLock === null) requestWakeLock();
+    }
+  });
+  document.addEventListener('touchstart', requestWakeLock, { once: true, passive: true });
+  document.addEventListener('click',      requestWakeLock, { once: true });
+
+  // ==================== INIT ====================
+
+  buildSkeleton();
+  updateClocks();
+  updateActiveDot();
+  setInterval(updateClocks, 1000);
+  setStatus('connecting');
+  tick();
+  setInterval(tick, REFRESH_MS);
+
+})();
+</script>
+</body>
+</html>
