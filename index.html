@@ -105,24 +105,28 @@ main {
 }
 main::-webkit-scrollbar { display: none; }
 
-.station {
+.page {
   flex: 0 0 100%;
   width: 100%;
   scroll-snap-align: center;
   scroll-snap-stop: always;
   padding: 6px 14px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   justify-content: center;
+  gap: 8px;
 }
 
-.station-inner {
+.page-displays {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
   max-width: 720px;
-  align-items: stretch;
+  align-self: center;
+  flex: 1;
+  min-height: 0;
 }
 
 /* === Display housing === */
@@ -291,30 +295,31 @@ main::-webkit-scrollbar { display: none; }
 @media (orientation: landscape) {
   header { padding: 4px 18px 0; }
   .status { font-size: 13px; }
-  .station { padding: 4px 14px; }
-  .station-inner { flex-direction: row; max-width: none; align-items: stretch; gap: 12px; }
-  .display-housing { padding: 14px 16px 14px 22px; gap: 22px; }
-  .line-marker { font-size: 48px; }
-  .rows { gap: 10px; }
-  .row { min-height: 60px; padding: 12px 16px; border-radius: 10px; }
-  .destination { font-size: 36px; letter-spacing: 0.1em; }
-  .cds { gap: 7px; }
-  .cd { width: 56px; height: 44px; font-size: 34px; border-radius: 4px; border-width: 2px; }
-  .clock-housing { padding: 12px 14px 8px; align-self: stretch; }
-  .analog-clock { width: 138px; height: 138px; }
-  .digital-clock { font-size: 28px; padding-bottom: 2px; padding-top: 4px; }
+  .page { flex-direction: row; align-items: center; padding: 4px 12px; gap: 12px; }
+  .page-displays { max-width: none; flex: 1; gap: 8px; min-width: 0; }
+  .display-housing { padding: 10px 14px 10px 18px; gap: 18px; flex: 1; min-height: 0; }
+  .line-marker { font-size: 36px; }
+  .rows { gap: 7px; }
+  .row { min-height: 46px; padding: 7px 14px; border-radius: 8px; }
+  .destination { font-size: 28px; letter-spacing: 0.09em; }
+  .cds { gap: 6px; }
+  .cd { width: 48px; height: 36px; font-size: 28px; border-radius: 4px; border-width: 2px; }
+  .clock-housing { padding: 10px 12px 6px; align-self: center; }
+  .analog-clock { width: 112px; height: 112px; }
+  .digital-clock { font-size: 24px; padding-bottom: 2px; padding-top: 2px; }
   .pager { padding: 4px 0 8px; }
 }
 
 /* sehr schmale Landscape (alte iPhones) */
 @media (orientation: landscape) and (max-height: 370px) {
-  .display-housing { padding: 10px 12px 10px 16px; gap: 16px; }
-  .line-marker { font-size: 36px; }
-  .row { min-height: 48px; padding: 8px 12px; }
-  .destination { font-size: 28px; }
-  .cd { width: 42px; height: 34px; font-size: 26px; }
-  .analog-clock { width: 100px; height: 100px; }
-  .digital-clock { font-size: 22px; }
+  .display-housing { padding: 7px 10px 7px 14px; gap: 14px; }
+  .line-marker { font-size: 28px; }
+  .row { min-height: 38px; padding: 5px 10px; }
+  .destination { font-size: 22px; }
+  .cd { width: 38px; height: 30px; font-size: 22px; }
+  .analog-clock { width: 88px; height: 88px; }
+  .digital-clock { font-size: 18px; }
+  .rows { gap: 5px; }
 }
 </style>
 </head>
@@ -430,31 +435,42 @@ main::-webkit-scrollbar { display: none; }
 
   // ==================== SKELETON ====================
 
+  const STATIONS_PER_PAGE = 2;
+
+  function renderDisplay(s, si) {
+    return '<div class="display-housing">' +
+      '<div class="line-marker">' + escapeHtml(s.line) + '</div>' +
+      '<div class="rows">' +
+        s.directions.map((d, di) =>
+          '<div class="row">' +
+            '<span class="destination" id="dest-' + si + '-' + di + '">' + escapeHtml((d.label || '').toUpperCase()) + '</span>' +
+            '<div class="cds" id="cds-' + si + '-' + di + '">' + emptyCds() + '</div>' +
+          '</div>'
+        ).join('') +
+      '</div>' +
+    '</div>';
+  }
+
   function buildSkeleton() {
-    $content.innerHTML = STATIONS.map((s, si) =>
-      '<section class="station" data-idx="' + si + '">' +
-        '<div class="station-inner">' +
-          '<div class="display-housing">' +
-            '<div class="line-marker">' + escapeHtml(s.line) + '</div>' +
-            '<div class="rows">' +
-              s.directions.map((d, di) =>
-                '<div class="row">' +
-                  '<span class="destination" id="dest-' + si + '-' + di + '">' + escapeHtml((d.label || '').toUpperCase()) + '</span>' +
-                  '<div class="cds" id="cds-' + si + '-' + di + '">' + emptyCds() + '</div>' +
-                '</div>'
-              ).join('') +
-            '</div>' +
-          '</div>' +
-          '<div class="clock-housing">' +
-            clockSvg() +
-            '<div class="digital-clock">--:--</div>' +
-          '</div>' +
+    const pages = [];
+    for (let i = 0; i < STATIONS.length; i += STATIONS_PER_PAGE) {
+      pages.push({ stations: STATIONS.slice(i, i + STATIONS_PER_PAGE), startIdx: i });
+    }
+
+    $content.innerHTML = pages.map(page =>
+      '<section class="page">' +
+        '<div class="page-displays">' +
+          page.stations.map((s, idx) => renderDisplay(s, page.startIdx + idx)).join('') +
+        '</div>' +
+        '<div class="clock-housing">' +
+          clockSvg() +
+          '<div class="digital-clock">--:--</div>' +
         '</div>' +
       '</section>'
     ).join('');
 
-    $pager.innerHTML = STATIONS.map((_, i) =>
-      '<button class="dot" data-idx="' + i + '" aria-label="Station ' + (i + 1) + '"></button>'
+    $pager.innerHTML = pages.map((_, i) =>
+      '<button class="dot" data-idx="' + i + '" aria-label="Seite ' + (i + 1) + '"></button>'
     ).join('');
     $pager.querySelectorAll('.dot').forEach(d => {
       d.addEventListener('click', () => {
